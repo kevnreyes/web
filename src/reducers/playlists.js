@@ -117,16 +117,10 @@ export default function reduce(state = initialState, action = {}) {
     // the "Active" button only, instead of on top of the entire playlist
     return setPlaylistLoading(state, payload.playlistID);
   case ACTIVATE_PLAYLIST_COMPLETE:
-    return {
-      ...state,
-      // set `active` property on all playlists
-      playlists: mapObj(state.playlists, playlist => ({
-        ...playlist,
-        loading: playlist._id === payload.playlistID ? false : playlist.loading,
-        active: playlist._id === payload.playlistID
-      })),
-      activePlaylistID: payload.playlistID
-    };
+    return assign(
+      setPlaylistLoading(state, payload.playlistID, false),
+      { activePlaylistID: payload.playlistID }
+    );
   case SELECT_PLAYLIST:
     return {
       ...state,

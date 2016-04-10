@@ -61,11 +61,13 @@ export const selectedPlaylistSelector = createSelector(
 
 export const playlistsSelector = createSelector(
   baseSelector,
+  activePlaylistIDSelector,
   selectedPlaylistIDSelector,
-  (playlists, selectedID) => values(playlists.playlists)
+  (playlists, activeID, selectedID) => values(playlists.playlists)
     .sort(byName)
     .map(playlist => ({
       ...playlist,
+      active: playlist._id === activeID,
       selected: playlist._id === selectedID
     }))
 );
