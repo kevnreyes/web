@@ -6,11 +6,6 @@ const byName = (a, b) => naturalCmp(a.name.toLowerCase(), b.name.toLowerCase());
 
 const baseSelector = state => state.playlists;
 
-export const playlistsSelector = createSelector(
-  baseSelector,
-  playlists => values(playlists.playlists).sort(byName)
-);
-
 export const playlistItemsSelector = createSelector(
   baseSelector,
   playlists => playlists.playlistItems
@@ -62,6 +57,17 @@ export const selectedPlaylistSelector = createSelector(
   selectedMediaSelector,
   (playlists, selectedID, selectedMedia) =>
     mergePlaylistItems(playlists.playlists[selectedID], selectedMedia)
+);
+
+export const playlistsSelector = createSelector(
+  baseSelector,
+  selectedPlaylistIDSelector,
+  (playlists, selectedID) => values(playlists.playlists)
+    .sort(byName)
+    .map(playlist => ({
+      ...playlist,
+      selected: playlist._id === selectedID
+    }))
 );
 
 export const nextMediaSelector = createSelector(

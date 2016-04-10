@@ -27,14 +27,6 @@ const initialState = {
   selectedPlaylistID: null
 };
 
-function deselectAll(playlists) {
-  return mapObj(playlists, playlist => {
-    return playlist.selected
-      ? { ...playlist, selected: false }
-      : playlist;
-  });
-}
-
 // Moves a list of media items to a given position in the playlist.
 function processMove(list, movedMedia, afterID) {
   // Take all moved media items out of the playlist…
@@ -138,11 +130,6 @@ export default function reduce(state = initialState, action = {}) {
   case SELECT_PLAYLIST:
     return {
       ...state,
-      // set `selected` property on playlists
-      playlists: mapObj(state.playlists, playlist => ({
-        ...playlist,
-        selected: playlist._id === payload.playlistID
-      })),
       selectedPlaylistID: payload.playlistID
     };
   case SEARCH_START:
@@ -150,7 +137,6 @@ export default function reduce(state = initialState, action = {}) {
     // search results view instead.
     return {
       ...state,
-      playlists: deselectAll(state.playlists),
       selectedPlaylistID: null
     };
 
@@ -185,13 +171,12 @@ export default function reduce(state = initialState, action = {}) {
       name: payload.name,
       description: payload.description,
       shared: payload.shared,
-      selected: true,
       creating: true
     };
     return {
       ...state,
       playlists: assign(
-        deselectAll(state.playlists),
+        state.playlists,
         { [meta.tempId]: newPlaylist }
       ),
       selectedPlaylistID: meta.tempId
@@ -200,11 +185,8 @@ export default function reduce(state = initialState, action = {}) {
     return {
       ...state,
       playlists: assign(
-        deselectAll(except(state.playlists, `${meta.tempId}`)),
-        { [payload.playlist._id]: {
-          ...payload.playlist,
-          selected: true
-        } }
+        except(state.playlists, `${meta.tempId}`),
+        { [payload.playlist._id]: payload.playlist }
       ),
       selectedPlaylistID: payload.playlist._id
     };
