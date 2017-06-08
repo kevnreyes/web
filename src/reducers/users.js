@@ -1,4 +1,3 @@
-import except from 'except';
 import indexBy from 'index-by';
 import { combineReducers } from 'redux';
 
@@ -29,11 +28,6 @@ function usersReducer(state = {}, action = {}) {
   const { type, payload } = action;
   switch (type) {
   case LOAD_ONLINE_USERS:
-    // this is merged in instead of replacing the state, because sometimes the
-    // JOIN event from the current user comes in before the LOAD event, and then
-    // the current user is sometimes excluded from the state. it looks like this
-    // approach could cause problems, too, though.
-    // TODO maybe replace state instead anyway and merge in the current user?
     return {
       ...state,
       ...indexBy(payload.users, '_id')
@@ -43,8 +37,6 @@ function usersReducer(state = {}, action = {}) {
       ...state,
       [payload.user._id]: payload.user
     };
-  case USER_LEAVE:
-    return except(state, payload.userID);
   case CHANGE_USERNAME:
     if (state[payload.userID]) {
       return {
@@ -72,9 +64,29 @@ function usersReducer(state = {}, action = {}) {
   }
 }
 
+function onlineUsersReducer(state = [], action = {}) {
+  const { type, payload } = action;
+  switch (type) {
+  case LOAD_ONLINE_USERS:
+    // this is merged in instead of replacing the state, because sometimes the
+    // JOIN event from the current user comes in before the LOAD event, and then
+    // the current user is sometimes excluded from the state. it looks like this
+    // approach could cause problems, too, though.
+    // TODO maybe replace state instead anyway and merge in the current user?
+    return state.concat(payload.users.map(user => user._id));
+  case USER_JOIN:
+    return state.concat([ payload.user._id ]);
+  case USER_LEAVE:
+    return state.filter(uid => payload.userID !== uid);
+  default:
+    return state;
+  }
+}
+
 const reduce = combineReducers({
   guests: guestsReducer,
-  users: usersReducer
+  users: usersReducer,
+  onlineUsers: onlineUsersReducer
 });
 
 export default reduce;

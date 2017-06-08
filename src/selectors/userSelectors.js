@@ -1,11 +1,17 @@
 import { createSelector } from 'reselect';
 import naturalCmp from 'natural-compare';
-import values from 'object-values';
 
 const authSelector = state => state.auth;
 
 const usersBaseSelector = state => state.users;
-export const usersSelector = createSelector(usersBaseSelector, base => base.users);
+export const usersSelector = createSelector(
+  usersBaseSelector,
+  users => users.users
+);
+const onlineUsersSelector = createSelector(
+  usersBaseSelector,
+  users => users.onlineUsers.map(id => users.users[id])
+);
 
 export const authErrorSelector = createSelector(authSelector, auth => auth.error);
 export const currentUserSelector = createSelector(authSelector, auth => auth.user);
@@ -38,12 +44,12 @@ function compareUsers(a, b) {
 }
 
 export const userListSelector = createSelector(
-  usersSelector,
-  users => values(users).sort(compareUsers)
+  onlineUsersSelector,
+  users => users.sort(compareUsers)
 );
 
 export const userCountSelector = createSelector(
-  userListSelector,
+  onlineUsersSelector,
   users => users.length
 );
 
