@@ -2,7 +2,10 @@ import { createSelector } from 'reselect';
 import {
   historyIDSelector, mediaSelector, startTimeSelector, djSelector
 } from './boothSelectors';
-import { currentUserSelector } from './userSelectors';
+import {
+  currentUserSelector,
+  usersSelector
+} from './userSelectors';
 import { currentVotesSelector } from './voteSelectors';
 
 const byTimestamp = (a, b) => (a.timestamp < b.timestamp ? 1 : -1);
@@ -11,7 +14,13 @@ const baseSelector = state => state.roomHistory;
 
 export const roomHistorySelector = createSelector(
   baseSelector,
-  history => history.slice().sort(byTimestamp)
+  usersSelector,
+  (history, users) => history.slice()
+    .map(entry => ({
+      ...entry,
+      user: users[entry.user]
+    }))
+    .sort(byTimestamp)
 );
 
 const addOwnVoteProps = id => entry => ({

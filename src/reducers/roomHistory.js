@@ -4,7 +4,7 @@ const initialState = [];
 
 const normalize = entry => ({
   _id: entry._id || entry.historyID,
-  user: entry.user,
+  user: entry.user._id,
   media: {
     ...entry.media.media,
     ...entry.media
