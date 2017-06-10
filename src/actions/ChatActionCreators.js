@@ -1,4 +1,3 @@
-import find from 'array-find';
 import ms from 'ms';
 import splitargs from 'splitargs';
 import parseChatMarkup from 'u-wave-parse-chat-markup';
@@ -30,6 +29,7 @@ import {
 import { settingsSelector } from '../selectors/settingSelectors';
 import {
   currentUserSelector,
+  usersSelector,
   userListSelector
 } from '../selectors/userSelectors';
 import { currentTimeSelector } from '../selectors/timeSelectors';
@@ -116,31 +116,29 @@ function isMuted(state, userID) {
 
 export function receive(message) {
   return (dispatch, getState) => {
-    const settings = settingsSelector(getState());
-    const currentUser = currentUserSelector(getState());
-    const users = userListSelector(getState());
-    const sender = find(users, user => user._id === message.userID);
+    const state = getState();
+    const settings = settingsSelector(state);
+    const currentUser = currentUserSelector(state);
+    const users = userListSelector(state);
+    const sender = usersSelector(state)[message.userID];
     const mentions = [
       ...users.map(user => user.username),
       ...getAvailableGroupMentions(sender)
     ];
 
-    if (isMuted(getState(), message.userID)) {
+    if (isMuted(state, message.userID)) {
       return;
     }
 
     const parsed = parseChatMarkup(message.text, { mentions });
-    resolveMentions(parsed, getState());
+    resolveMentions(parsed, state);
 
     const isMention = currentUser ? hasMention(parsed, currentUser._id) : false;
 
     dispatch({
       type: RECEIVE_MESSAGE,
       payload: {
-        message: {
-          ...message,
-          user: sender
-        },
+        message,
         isMention,
         parsed
       }

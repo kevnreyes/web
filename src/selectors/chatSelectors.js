@@ -34,7 +34,11 @@ const filteredMessagesSelector = createSelector(
 );
 export const messagesSelector = createSelector(
   filteredMessagesSelector,
-  messages => messages.slice(-MAX_MESSAGES)
+  usersSelector,
+  (messages, users) => messages.slice(-MAX_MESSAGES).map(message => ({
+    ...message,
+    user: users[message.userID]
+  }))
 );
 
 export const markupCompilerOptionsSelector = createStructuredSelector({
