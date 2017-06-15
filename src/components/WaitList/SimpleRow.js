@@ -49,7 +49,7 @@ export default compose(
   withProps(props => ({
     onOpenCard(event) {
       event.preventDefault();
-      props.openUserCard(props.user);
+      props.openUserCard(props.user._id);
     }
   }))
 )(SimpleRow);

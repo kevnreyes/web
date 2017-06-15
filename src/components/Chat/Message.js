@@ -22,7 +22,7 @@ const enhance = compose(
       props.onDelete(props._id),
     onUsernameClick: props => (event) => {
       event.preventDefault();
-      props.openUserCard(props.user);
+      props.openUserCard(props.userID);
     }
   })
 );

@@ -1,20 +1,20 @@
 import React from 'react';
-import UserCard from '../components/UserCard';
+import UserCard from '../containers/UserCard';
 
 export default function userCardable() {
   return (Component) => {
     class CardableComponent extends React.Component {
       state = {
         open: false,
-        user: null,
+        userID: null,
         position: null
       };
 
-      handleOpen = (user) => {
+      handleOpen = (userID) => {
         const pos = this.container.getBoundingClientRect();
         this.setState({
           open: true,
-          user,
+          userID: typeof userID === 'object' ? userID._id : userID,
           position: {
             x: pos.left,
             y: pos.top
@@ -31,12 +31,12 @@ export default function userCardable() {
       };
 
       render() {
-        const { open, position, user } = this.state;
+        const { open, position, userID } = this.state;
         return (
           <div ref={this.refContainer}>
             {open && (
               <UserCard
-                user={user}
+                userID={userID}
                 position={position}
                 onClose={this.handleClose}
               />
