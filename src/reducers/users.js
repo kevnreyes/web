@@ -1,4 +1,3 @@
-import indexBy from 'index-by';
 import { combineReducers } from 'redux';
 
 import {
@@ -8,9 +7,6 @@ import {
   LOAD_ONLINE_USERS,
   USER_JOIN,
   USER_LEAVE,
-  CHANGE_USERNAME,
-  CHANGE_ROLE,
-
   RECEIVE_GUEST_COUNT
 } from '../constants/actionTypes/users';
 
@@ -22,46 +18,6 @@ function guestsReducer(state = 0, action = {}) {
     return action.payload.guests;
   }
   return state;
-}
-
-function usersReducer(state = {}, action = {}) {
-  const { type, payload } = action;
-  switch (type) {
-  case LOAD_ONLINE_USERS:
-    return {
-      ...state,
-      ...indexBy(payload.users, '_id')
-    };
-  case USER_JOIN:
-    return {
-      ...state,
-      [payload.user._id]: payload.user
-    };
-  case CHANGE_USERNAME:
-    if (state[payload.userID]) {
-      return {
-        ...state,
-        [payload.userID]: {
-          ...state[payload.userID],
-          username: payload.username
-        }
-      };
-    }
-    return state;
-  case CHANGE_ROLE:
-    if (state[payload.userID]) {
-      return {
-        ...state,
-        [payload.userID]: {
-          ...state[payload.userID],
-          role: payload.role
-        }
-      };
-    }
-    return state;
-  default:
-    return state;
-  }
 }
 
 function onlineUsersReducer(state = [], action = {}) {
@@ -85,7 +41,6 @@ function onlineUsersReducer(state = [], action = {}) {
 
 const reduce = combineReducers({
   guests: guestsReducer,
-  users: usersReducer,
   onlineUsers: onlineUsersReducer
 });
 

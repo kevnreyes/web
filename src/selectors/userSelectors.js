@@ -3,14 +3,16 @@ import naturalCmp from 'natural-compare';
 
 const authSelector = state => state.auth;
 
+const entitiesSelector = state => state.entities;
 const usersBaseSelector = state => state.users;
 export const usersSelector = createSelector(
-  usersBaseSelector,
-  users => users.users
+  entitiesSelector,
+  entities => entities.users
 );
 const onlineUsersSelector = createSelector(
   usersBaseSelector,
-  users => users.onlineUsers.map(id => users.users[id])
+  usersSelector,
+  (users, userEntities) => users.onlineUsers.map(id => userEntities[id])
 );
 
 export const authErrorSelector = createSelector(authSelector, auth => auth.error);
