@@ -1,3 +1,4 @@
+import indexBy from 'index-by';
 import {
   LOAD_ALL_PLAYLISTS_START, LOAD_ALL_PLAYLISTS_COMPLETE,
   LOAD_PLAYLIST_START, LOAD_PLAYLIST_COMPLETE,
@@ -29,6 +30,7 @@ import {
   activePlaylistSelector,
   selectedPlaylistSelector
 } from '../selectors/playlistSelectors';
+import loadEntities from '../utils/loadEntities';
 import mergeIncludedModels from '../utils/mergeIncludedModels';
 
 const MEDIA_PAGE_SIZE = 50;
@@ -36,7 +38,10 @@ const MEDIA_PAGE_SIZE = 50;
 export function setPlaylists(playlists) {
   return {
     type: LOAD_ALL_PLAYLISTS_COMPLETE,
-    payload: { playlists }
+    payload: { playlists },
+    meta: {
+      entities: { playlists: indexBy(playlists, '_id') }
+    }
   };
 }
 
@@ -55,11 +60,14 @@ export function loadPlaylistStart(playlistID, page, { sneaky = false } = {}) {
   };
 }
 
-export function loadPlaylistComplete(playlistID, media, pagination) {
+export function loadPlaylistComplete(playlistID, media, pagination, response) {
   return {
     type: LOAD_PLAYLIST_COMPLETE,
     payload: { playlistID, media },
-    meta: pagination
+    meta: {
+      ...pagination,
+      entities: loadEntities(response, 'playlistItems')
+    }
   };
 }
 
@@ -74,7 +82,8 @@ export function loadPlaylist(playlistID, page = 0, meta = {}) {
         page: res.meta.offset / res.meta.pageSize,
         pageSize: res.meta.pageSize,
         size: res.meta.total
-      }
+      },
+      res
     ),
     onError: error => ({
       type: LOAD_PLAYLIST_COMPLETE,
@@ -260,7 +269,12 @@ export function createPlaylistComplete(playlist, tempId) {
   return {
     type: CREATE_PLAYLIST_COMPLETE,
     payload: { playlist },
-    meta: { tempId }
+    meta: {
+      tempId,
+      entities: {
+        playlists: { [playlist._id]: playlist }
+      }
+    }
   };
 }
 

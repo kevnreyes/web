@@ -1,3 +1,4 @@
+import indexBy from 'index-by';
 import {
   LOAD_ONLINE_USERS,
   USER_JOIN,
@@ -19,7 +20,10 @@ import { put } from './RequestActionCreators';
 export function setUsers(users) {
   return {
     type: LOAD_ONLINE_USERS,
-    payload: { users }
+    payload: { users },
+    meta: {
+      entities: { users: indexBy(users, '_id') }
+    }
   };
 }
 
@@ -36,6 +40,11 @@ export function join(user) {
     payload: {
       user,
       timestamp: Date.now()
+    },
+    meta: {
+      entities: {
+        users: { [user._id]: user }
+      }
     }
   };
 }
@@ -64,6 +73,13 @@ export function changeUsername(userID, username) {
         userID,
         username,
         timestamp: Date.now()
+      },
+      meta: {
+        entities: {
+          update: {
+            users: { [userID]: { username } }
+          }
+        }
       }
     });
   };
@@ -99,6 +115,13 @@ export function changeUserRole(userID, role) {
       userID,
       role,
       timestamp: Date.now()
+    },
+    meta: {
+      entities: {
+        update: {
+          users: { [userID]: { role } }
+        }
+      }
     }
   };
 }

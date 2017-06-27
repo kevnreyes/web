@@ -5,6 +5,7 @@ export booth from './booth';
 export chat from './chat';
 export config from './config';
 export dialogs from './dialogs';
+export entities from './entities';
 export errors from './errors';
 export imports from './imports';
 export mediaSearch from './mediaSearch';

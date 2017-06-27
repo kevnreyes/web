@@ -9,6 +9,7 @@ import { get, post } from './RequestActionCreators';
 import { historyIDSelector, isCurrentDJSelector } from '../selectors/boothSelectors';
 import { currentPlaySelector } from '../selectors/roomHistorySelectors';
 import { usersSelector } from '../selectors/userSelectors';
+import loadEntities from '../utils/loadEntities';
 import mergeIncludedModels from '../utils/mergeIncludedModels';
 
 export function advanceToEmpty() {
@@ -92,7 +93,8 @@ export function loadHistoryComplete(response) {
       payload: playHistory,
       meta: {
         page: Math.floor(meta.offset / meta.pageSize),
-        size: meta.pageSize
+        size: meta.pageSize,
+        entities: loadEntities(response, 'historyEntries')
       }
     });
   };

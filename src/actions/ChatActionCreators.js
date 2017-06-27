@@ -143,6 +143,11 @@ export function receive(message) {
         },
         isMention,
         parsed
+      },
+      meta: {
+        entities: {
+          chatMessages: { [message._id]: message }
+        }
       }
     });
 
