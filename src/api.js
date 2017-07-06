@@ -1,5 +1,6 @@
 import * as PlaylistActionCreators from './actions/PlaylistActionCreators';
 import * as RequestActionCreators from './actions/RequestActionCreators';
+import * as EmojiActionCreators from './actions/EmojiActionCreators';
 import MediaList from './components/MediaList';
 import VideoBackdrop from './components/Video/VideoBackdrop';
 import ImportPanelHeader from './components/PlaylistManager/Import/ImportPanelHeader';
@@ -25,4 +26,5 @@ export const components = {
 export const actions = {
   playlists: PlaylistActionCreators,
   request: RequestActionCreators,
+  emoji: EmojiActionCreators,
 };

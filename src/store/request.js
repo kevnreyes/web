@@ -1,6 +1,6 @@
 import assign from 'object-assign';
 import qsStringify from 'qs-stringify';
-
+import isPlainObject from 'lodash/isPlainObject';
 import { REQUEST_START } from '../constants/actionTypes/request';
 import {
   requestComplete,
@@ -63,6 +63,7 @@ export default function middleware(middlewareOptions = {}) {
       url,
       qs,
       data,
+      headers,
     } = action.payload;
     const {
       id,
@@ -95,7 +96,11 @@ export default function middleware(middlewareOptions = {}) {
     }
 
     if (method !== 'get') {
-      requestOptions.body = JSON.stringify(data);
+      requestOptions.body = isPlainObject(data) ? JSON.stringify(data) : data;
+    }
+
+    if (headers) {
+      assign(requestOptions.headers, headers);
     }
 
     if (onStart) {

@@ -14,6 +14,11 @@ export const requestOptionsSelector = createSelector(
   },
 );
 
+export const shouldLoadEmojiSelector = createSelector(
+  configSelector,
+  config => config.loadEmoji || false,
+);
+
 export const availableEmojiImagesSelector = createSelector(
   configSelector,
   config => config.emoji || {},

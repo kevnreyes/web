@@ -29,5 +29,6 @@ node_modules
 /public
 /lib
 /es
+/tasks/custom-emoji
 .eslintcache
 .nyc_output

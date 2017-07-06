@@ -4,7 +4,6 @@
 require('loud-rejection/register');
 const gulp = require('gulp');
 const { colors, env, log } = require('gulp-util');
-const emojione = require('u-wave-web-emojione');
 const recaptchaTestKeys = require('recaptcha-test-keys');
 const express = require('express');
 const proxy = require('http-proxy-middleware');
@@ -35,6 +34,7 @@ const devServerTask = (done) => {
     'u-wave-http-api/dev/u-wave-api-dev-server',
     'Could not find the u-wave HTTP API module. Did you run `npm link u-wave-http-api`?',
   );
+
   const monitor = nodemon({
     script: apiDevServer,
     args: ['--port', String(serverPort), '--watch'],
@@ -84,8 +84,12 @@ gulp.task('serve', serveDeps, (done) => {
   const apiUrl = '/api';
   const socketUrl = `ws://localhost:${serverPort}`;
 
-  app.use(apiUrl, proxy({ target: `http://localhost:${serverPort}/` }));
-  app.use('/assets/emoji/', emojione.middleware());
+  app.use(apiUrl, proxy({
+    target: `http://localhost:${serverPort}/`,
+  }));
+  app.use('/assets/emoji/', proxy({
+    target: `http://localhost:${serverPort}/`,
+  }));
 
   if (watch) {
     Object.keys(wpConfig.entry).forEach((chunk) => {
@@ -119,7 +123,6 @@ gulp.task('serve', serveDeps, (done) => {
     app.use(createWebClient(null, {
       apiUrl,
       socketUrl,
-      emoji: emojione.emoji,
       title: 'üWave (Development)',
       publicPath: '/',
       // Point u-wave-web middleware to the virtual webpack filesystem.
@@ -140,7 +143,6 @@ gulp.task('serve', serveDeps, (done) => {
     app.use(createWebClient(null, {
       apiUrl,
       socketUrl,
-      emoji: emojione.emoji,
       recaptcha: { key: recaptchaTestKeys.sitekey },
     }));
     done();

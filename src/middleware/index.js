@@ -15,6 +15,10 @@ export default function uwaveWebClient(uw, options = {}) {
 
   const clientRouter = router();
 
+  if (!clientOptions.emoji && typeof clientOptions.loadEmoji === 'undefined') {
+    clientOptions.loadEmoji = true;
+  }
+
   return clientRouter
     .get('/', (req, res) => {
       res.setHeader('content-type', 'text/html');

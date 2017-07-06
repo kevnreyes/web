@@ -28,6 +28,10 @@ import {
   muteUser as chatMute,
   unmuteUser as chatUnmute,
 } from '../actions/ChatActionCreators';
+import {
+  emojiAdded,
+  emojiRemoved,
+} from '../actions/EmojiActionCreators';
 import { cyclePlaylist } from '../actions/PlaylistActionCreators';
 import {
   join as userJoin,
@@ -141,6 +145,8 @@ const actions = {
     addUserRoles(userID, roles),
   'acl:disallow': ({ userID, roles }) =>
     removeUserRoles(userID, roles),
+  'emoji:add': emojiAdded,
+  'emoji:remove': emojiRemoved,
 };
 
 export default function middleware({ url = defaultUrl() } = {}) {
