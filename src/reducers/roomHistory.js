@@ -1,7 +1,5 @@
 import { ADVANCE, LOAD_HISTORY_COMPLETE } from '../constants/actionTypes/booth';
 
-const initialState = [];
-
 const normalize = entry => ({
   _id: entry._id || entry.historyID,
   user: entry.user._id,
@@ -17,13 +15,15 @@ const normalize = entry => ({
   }
 });
 
+const initialState = [];
+
 export default function reduce(state = initialState, action = {}) {
   const { type, payload, meta } = action;
   switch (type) {
   case LOAD_HISTORY_COMPLETE:
-    return payload.map(normalize);
+    return payload.map(normalize).map(x => x._id);
   case ADVANCE: {
-    const mostRecent = state[0];
+    const mostRecent = { _id: state[0] };
     // If the currently playing track is already in the history, remove it--
     // it'll be added back on the next advance, and will be handled by the
     // roomHistorySelector in the mean time.
@@ -33,7 +33,7 @@ export default function reduce(state = initialState, action = {}) {
     if (!meta || !meta.previous) {
       return state;
     }
-    return [ normalize(meta.previous), ...state ];
+    return [ normalize(meta.previous)._id, ...state ];
   }
   default:
     return state;

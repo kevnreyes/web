@@ -1,3 +1,4 @@
+import except from 'except';
 import { createSelector } from 'reselect';
 import {
   historyIDSelector, mediaSelector, startTimeSelector, djSelector
@@ -8,17 +9,32 @@ import {
 } from './userSelectors';
 import { currentVotesSelector } from './voteSelectors';
 
-const byTimestamp = (a, b) => (a.timestamp < b.timestamp ? 1 : -1);
+const byTimestamp = (a, b) => (a.playedAt < b.playedAt ? 1 : -1);
 
 const baseSelector = state => state.roomHistory;
+const mediaEntitiesSelector = state => state.entities.media;
+const historyEntriesSelector = state => state.entities.historyEntries;
 
 export const roomHistorySelector = createSelector(
   baseSelector,
   usersSelector,
-  (history, users) => history.slice()
+  historyEntriesSelector,
+  mediaEntitiesSelector,
+  (history, users, historyEntries, mediaEntities) => history
+    .map(id => historyEntries[id])
     .map(entry => ({
-      ...entry,
-      user: users[entry.user]
+      ...except(entry, 'downvotes', 'upvotes', 'favorites'),
+      media: {
+        ...mediaEntities[entry.media.media],
+        ...entry.media
+      },
+      stats: {
+        downvotes: entry.downvotes,
+        upvotes: entry.upvotes,
+        favorites: entry.favorites
+      },
+      user: users[entry.user],
+      playedAt: new Date(entry.playedAt).getTime()
     }))
     .sort(byTimestamp)
 );
@@ -49,7 +65,7 @@ export const currentPlaySelector = createSelector(
       _id: historyID,
       user: dj,
       media,
-      timestamp,
+      playedAt: timestamp,
       stats
     };
     return addOwnVoteProps(user ? user._id : null)(entry);

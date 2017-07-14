@@ -27,4 +27,8 @@ HistoryList.propTypes = {
   onOpenAddMediaMenu: PropTypes.func.isRequired
 };
 
-export default HistoryList;
+/* eslint-disable */
+export default props => {
+  console.log(props.media)
+  return <HistoryList {...props} />
+};

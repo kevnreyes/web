@@ -84,7 +84,7 @@ class HistoryRow extends React.Component {
       onClick
     } = this.props;
     const {
-      media, timestamp, user, stats
+      media, playedAt, user, stats
     } = historyEntry;
     const { showActions } = this.state;
     const selectedClass = selected ? 'is-selected' : '';
@@ -121,8 +121,8 @@ class HistoryRow extends React.Component {
         <div className="HistoryRow-user">
           {user.username}
         </div>
-        <div className="HistoryRow-time" dateTime={timestamp}>
-          <TimeAgo timestamp={timestamp} />
+        <div className="HistoryRow-time" dateTime={playedAt}>
+          <TimeAgo timestamp={playedAt} />
         </div>
         {showActions && (
           <Actions
