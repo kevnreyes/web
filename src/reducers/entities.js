@@ -17,7 +17,7 @@ export default function reducer(state = initialState, action = {}) {
   });
 
   if (updates.update) {
-    const update = updates.update;
+    const { update } = updates;
     Object.keys(update).forEach((type) => {
       nextState[type] = { ...nextState[type] };
       Object.keys(update[type]).forEach((id) => {
