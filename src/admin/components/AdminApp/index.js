@@ -33,6 +33,13 @@ const AdminApp = ({
         >
           <ListItemText primary="Bans" />
         </ListItem>
+        <ListItem
+          selected={currentView === 'emoji'}
+          className="AdminApp-menuItem"
+          onClick={() => onTransition('emoji')}
+        >
+          <ListItemText primary="Emoji" />
+        </ListItem>
       </List>
     </div>
     <div className="AdminApp-page">
