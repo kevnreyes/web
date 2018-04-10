@@ -14,8 +14,10 @@ import AppContainer from './containers/App';
 import { get as readSession } from './utils/Session';
 import generateClassName from './utils/generateClassName';
 import configureStore from './store/configureStore';
+import { loadEmoji } from './actions/EmojiActionCreators';
 import { initState, socketConnect, setSessionToken } from './actions/LoginActionCreators';
 import { languageSelector } from './selectors/settingSelectors';
+import { shouldLoadEmojiSelector } from './selectors/configSelectors';
 import * as api from './api';
 // Register default chat commands.
 import './utils/commands';
@@ -102,9 +104,12 @@ export default class Uwave {
       });
     }
 
+    const shouldLoadEmoji = shouldLoadEmojiSelector(this.store.getState());
+
     this.store.dispatch(socketConnect());
     return Promise.all([
       localePromise,
+      shouldLoadEmoji && this.store.dispatch(loadEmoji()),
       this.store.dispatch(initState()),
     ]).then(([locale]) => {
       this.locale = locale;
