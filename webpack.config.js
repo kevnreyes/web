@@ -8,6 +8,7 @@ const HtmlPlugin = require('html-webpack-plugin');
 const HtmlSiblingChunksPlugin = require('html-webpack-include-sibling-chunks-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const ManifestPlugin = require('webpack-pwa-manifest');
+const OfflinePlugin = require('offline-plugin');
 const merge = require('webpack-merge');
 const htmlMinifierOptions = require('./tasks/utils/htmlMinifierOptions');
 
@@ -67,6 +68,7 @@ const plugins = [
     paths: true,
   }),
   new ManifestPlugin(require('./src/manifest').default),
+  new OfflinePlugin(),
 ];
 
 let optimization;

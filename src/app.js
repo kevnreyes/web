@@ -1,3 +1,4 @@
+import { install as installServiceWorker } from 'offline-plugin/runtime';
 import Uwave from './Uwave';
 import youTubeSource from './sources/youtube';
 import soundCloudSource from './sources/soundcloud';
@@ -22,6 +23,8 @@ uw.build().then(() => {
   uw.renderToDOM(document.querySelector('#app'));
   document.querySelector('#app-loading').innerHTML = '';
   document.querySelector('#jss').textContent = '';
+
+  installServiceWorker();
 }).catch((err) => {
   document.querySelector('.LoadingScreen-notice').textContent = `Error: ${err.message}`;
 
