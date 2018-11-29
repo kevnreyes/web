@@ -1,10 +1,14 @@
+os:
+  - linux
+  - windows
+
 language: node_js
 node_js:
   - stable
   - 8.9
 
 before_install:
-  - nvm install-latest-npm
+  - npm install -g npm@6
   - npm install -g greenkeeper-lockfile@1
 before_script:
   - greenkeeper-lockfile-update
