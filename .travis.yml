@@ -10,8 +10,6 @@ matrix:
     - os: windows
       node_js: 8.9
 
-before_install:
-  - npm install -g npm@6
 before_script:
   - npm run build
 
